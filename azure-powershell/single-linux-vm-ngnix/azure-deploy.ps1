@@ -75,3 +75,6 @@ $PublicSettings = '{"commandToExecute":"apt-get -y update && apt-get -y install 
 Set-AzVMExtension -ExtensionName "NGINX" -ResourceGroupName $resourceGroup -VMName $vmName `
   -Publisher "Microsoft.Azure.Extensions" -ExtensionType "CustomScript" -TypeHandlerVersion 2.0 `
   -SettingString $PublicSettings -Location $location
+
+# Get IP address of VM
+(Get-AzPublicIpAddress -Name "mypublicdns$($deploymentCode)").IpAddress

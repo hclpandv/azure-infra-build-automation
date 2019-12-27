@@ -18,8 +18,10 @@ vm_name="viki-ubuntu-web-server-02"
 az group create --name $resource_group --location $location
 
 # Create a virtual network.
-az network vnet create --resource-group $resource_group --name $vnet --subnet-name $subnet
-
+az network vnet create --resource-group $resource_group --name $vnet --address-prefix 192.169.0.0/16 \
+    --location $location \
+    --subnet-name $subnet --subnet-prefix 192.169.1.0/24
+    
 # Create a public IP address.
 az network public-ip create --resource-group $resource_group --name viki-public-ip
 
