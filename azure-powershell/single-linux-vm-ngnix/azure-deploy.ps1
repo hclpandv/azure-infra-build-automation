@@ -6,7 +6,7 @@
 
 #---Mgmt Vars
 $scriptVersion = 1.0
-$deploymentCode = "viki$(Get-Random)"
+$deploymentCode = "vikipsdeploy$(Get-Date -format yyMMddhhmm)"
 
 #---Azure Global Vars
 $resourceGroup = "single-linux-vm-nginx-$($deploymentCode)-rg"
