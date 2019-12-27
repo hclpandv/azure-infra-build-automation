@@ -37,13 +37,14 @@ az network nic create \
 
 # Create a new virtual machine, this creates SSH keys if not present.
 az vm create --resource-group $resource_group --name $vm_name --nics viki-nic --image UbuntuLTS --generate-ssh-keys \
+  --admin-username vikiadmin \
   --custom-data cloud-init.txt
 
 # Open port 22 to allow SSh traffic to host.
-az vm open-port --port 22 --resource-group $resource_group --name $vm_name
+az vm open-port --port 22 --priority 100 --resource-group $resource_group --name $vm_name
 
 # Open port 80 to allow http traffic to host.
-az vm open-port --port 80 --resource-group $resource_group --name $vm_name
+az vm open-port --port 80 --priority 110 --resource-group $resource_group --name $vm_name
 
 #------------------------------ Use CustomScript extension to install NGINX.(Un-comment if needed)----------------
 #az vm extension set \
