@@ -27,13 +27,13 @@ $VmAdminUser = "vikiadmin"
 $VmPassword = ConvertTo-SecureString "d0nt%find%m3" -AsPlainText -Force
 $VmCred = New-Object System.Management.Automation.PSCredential ($vmAdminUser, $vmPassword);
 $VmImageConfig = @{
-    PublisherName = "localhost";
+    PublisherName = "MicrosoftWindowsServer";
     Offer = "WindowsServer"
     Skus = "2012-R2-Datacenter"
     Version = "latest"
 }
 
-$ComputerName = "viki-win-web-server-01"
+$ComputerName = "vikiweb01" # Cant be more than 15 Chars (Limitation)
 $VmName = "viki-win-web-server-01"
 $VmSize = "Standard_B1s"
 
@@ -48,7 +48,7 @@ New-AzResourceGroup -Name $ResourceGroup -Location $Location
 $frontendSubnet = New-AzVirtualNetworkSubnetConfig @FrontendSubnetConfig
 $backendSubnet  = New-AzVirtualNetworkSubnetConfig @BackendSubnetConfig
 $vnet = New-AzVirtualNetwork -Name $VnetName -ResourceGroupName $ResourceGroup `
--Location centralus -AddressPrefix $VnetAddress -Subnet $frontendSubnet,$backendSubnet
+-Location $Location -AddressPrefix $VnetAddress -Subnet $frontendSubnet,$backendSubnet
 
 # Create a public IP address
 $PublicIP = New-AzPublicIpAddress -ResourceGroupName $ResourceGroup -Location $Location `
@@ -88,9 +88,9 @@ $PublicSettings = @{
 }
 
 # Use Custom Script Extension to install IIS and configure basic website
-Set-AzVMExtension -ExtensionName "CustomScript-iis" -ResourceGroupName $resourceGroup -VMName $VmName `
+Set-AzVMExtension -ExtensionName "CustomScript" -ResourceGroupName $ResourceGroup -VMName $VmName `
   -Publisher "Microsoft.Azure.Extensions" -ExtensionType "CustomScript" -TypeHandlerVersion 2.0 `
-  -SettingString $PublicSettings -Location $location
+  -Settings $PublicSettings -Location $Location
 
 # Get IP address of VM
-(Get-AzPublicIpAddress -Name "mypublicdns$($DeploymentCode)").IpAddress
+(Get-AzPublicIpAddress -Name "$($DeploymentCode)-public-ip").IpAddress
