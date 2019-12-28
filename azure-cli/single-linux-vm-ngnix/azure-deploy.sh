@@ -9,7 +9,9 @@ DEPLOY_CODE="vikiazclideploy${TIME_STAMP}"
 resource_group=""${DEPLOY_CODE}-rg""
 location="westeurope"
 vnet="${DEPLOY_CODE}-vnet"
+vnet_address="192.166.0.0/16"
 subnet="${DEPLOY_CODE}-sbnt"
+subnet_address="192.166.1.0/24"
 nsg="${DEPLOY_CODE}-nsg"
 vm_name="ubuntu-web01"
 vm_size="Standard_B1s"
@@ -22,9 +24,9 @@ vm_public_ip="$(vm_name)-ip"
 az group create --name $resource_group --location $location
 
 # Create a virtual network.
-az network vnet create --resource-group $resource_group --name $vnet --address-prefix 192.166.0.0/16 \
+az network vnet create --resource-group $resource_group --name $vnet --address-prefix $vnet_address \
     --location $location \
-    --subnet-name $subnet --subnet-prefix 192.166.1.0/24
+    --subnet-name $subnet --subnet-prefix $subnet_address
     
 # Create a public IP address.
 az network public-ip create --resource-group $resource_group --name $vm_public_ip
