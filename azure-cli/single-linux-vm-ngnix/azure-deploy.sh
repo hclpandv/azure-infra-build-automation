@@ -2,14 +2,18 @@
 
 #---mgmt vars
 SCRIPT_VERSION=1.0
-TIME_STAMP=$(date +'%Y%m%d%H%M') #For Logname
-DEPLOY_CODE="viki${TIME_STAMP}"
+TIME_STAMP=$(date +'%y%m%d%H%M') #For Logname
+DEPLOY_CODE="vikiazclideploy${TIME_STAMP}"
+
 #---azure resource Vars
-resource_group="single-linux-vm-nginx-${DEPLOY_CODE}-rg"
+resource_group=""${DEPLOY_CODE}-rg""
 location="westeurope"
 vnet="${DEPLOY_CODE}-vnet"
 subnet="${DEPLOY_CODE}-sbnt"
-vm_name="viki-ubuntu-web-server-02"
+nsg="${DEPLOY_CODE}-nsg"
+vm_name="ubuntu-web01"
+vm_size="Standard_B1s"
+vm_public_ip="$(vm_name)-ip"
 #---------------------------------
 # main
 #---------------------------------
@@ -18,15 +22,15 @@ vm_name="viki-ubuntu-web-server-02"
 az group create --name $resource_group --location $location
 
 # Create a virtual network.
-az network vnet create --resource-group $resource_group --name $vnet --address-prefix 192.169.0.0/16 \
+az network vnet create --resource-group $resource_group --name $vnet --address-prefix 192.166.0.0/16 \
     --location $location \
-    --subnet-name $subnet --subnet-prefix 192.169.1.0/24
+    --subnet-name $subnet --subnet-prefix 192.166.1.0/24
     
 # Create a public IP address.
-az network public-ip create --resource-group $resource_group --name viki-public-ip
+az network public-ip create --resource-group $resource_group --name $vm_public_ip
 
 # Create a network security group.
-az network nsg create --resource-group $resource_group --name viki-nsg
+az network nsg create --resource-group $resource_group --name $nsg
 
 # Create a virtual network card and associate with public IP address and NSG.
 az network nic create \
@@ -34,11 +38,12 @@ az network nic create \
   --name viki-nic \
   --vnet-name $vnet \
   --subnet $subnet \
-  --network-security-group viki-nsg \
-  --public-ip-address viki-public-ip
+  --network-security-group $nsg \
+  --public-ip-address $vm_public_ip
 
 # Create a new virtual machine, this creates SSH keys if not present.
 az vm create --resource-group $resource_group --name $vm_name --nics viki-nic --image UbuntuLTS --generate-ssh-keys \
+  --size $vm_size \
   --admin-username vikiadmin \
   --custom-data cloud-init.txt
 
@@ -59,7 +64,9 @@ az vm open-port --port 80 --priority 110 --resource-group $resource_group --name
 #------------------------------------------------------------------------------------------------------------------
 
 # Output the public IP address to access the site in a web browser
-az network public-ip show \
+$ip_address=$(az network public-ip show \
   --resource-group $resource_group \
-  --name viki-public-ip \
-  --query [ipAddress]
+  --name $vm_public_ip \
+  --query [ipAddress])
+
+echo "VM: $vm_name with Public_IP: $ip_address is created. you may access it via browser or SSH"
