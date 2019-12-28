@@ -6,7 +6,7 @@ TIME_STAMP=$(date +'%y%m%d%H%M') #For Logname
 DEPLOY_CODE="vikiazclideploy${TIME_STAMP}"
 
 #---azure resource Vars
-resource_group=""${DEPLOY_CODE}-rg""
+resource_group="${DEPLOY_CODE}-rg"
 location="westeurope"
 vnet="${DEPLOY_CODE}-vnet"
 vnet_address="192.166.0.0/16"
@@ -15,7 +15,8 @@ subnet_address="192.166.1.0/24"
 nsg="${DEPLOY_CODE}-nsg"
 vm_name="ubuntu-web01"
 vm_size="Standard_B1s"
-vm_public_ip="$(vm_name)-ip"
+vm_nic="${vm_name}-nic"
+vm_public_ip="${vm_name}-ip"
 #---------------------------------
 # main
 #---------------------------------
@@ -37,14 +38,14 @@ az network nsg create --resource-group $resource_group --name $nsg
 # Create a virtual network card and associate with public IP address and NSG.
 az network nic create \
   --resource-group $resource_group \
-  --name viki-nic \
+  --name $vm_nic \
   --vnet-name $vnet \
   --subnet $subnet \
   --network-security-group $nsg \
   --public-ip-address $vm_public_ip
 
 # Create a new virtual machine, this creates SSH keys if not present.
-az vm create --resource-group $resource_group --name $vm_name --nics viki-nic --image UbuntuLTS --generate-ssh-keys \
+az vm create --resource-group $resource_group --name $vm_name --nics $vm_nic --image UbuntuLTS --generate-ssh-keys \
   --size $vm_size \
   --admin-username vikiadmin \
   --custom-data cloud-init.txt
