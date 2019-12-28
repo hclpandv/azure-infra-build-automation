@@ -2,7 +2,7 @@
 
 #---mgmt vars
 SCRIPT_VERSION=1.0
-TIME_STAMP=$(date +'%y%m%d%H%M') #For Logname
+TIME_STAMP=$(date +'%y%m%d%H%M' --utc)
 DEPLOY_CODE="vikiazclideploy${TIME_STAMP}"
 
 #---azure resource Vars
