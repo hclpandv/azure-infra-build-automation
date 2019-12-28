@@ -6,21 +6,21 @@
 
 #---Mgmt Vars
 $ScriptVersion = 1.0
-$DeploymentCode = "vikipsdeploy$(Get-Date -format yyMMddhhmm)"
+$DeploymentCode = "vikipsdeploy$((get-date).ToUniversalTime().ToString('yyMMddhhmm'))"
 
 #---- Vars
 $ResourceGroup = "$($DeploymentCode)-rg"
 $Location = "westindia"
 $VnetName = "$($DeploymentCode)-vnet"
-$VnetAddress = "11.66.0.0/22" #11.66.0.0 - 11.66.3.256
+$VnetAddress = "11.56.0.0/22" #11.66.0.0 - 11.66.3.256
 $FrontendSubnetConfig = @{
                 Name = "frontendsubnet";
-                AddressPrefix = "11.66.1.0/24"; #11.66.1.0 - 11.66.1.255 
+                AddressPrefix = "11.56.1.0/24"; #11.66.1.0 - 11.66.1.255 
 }
 
 $BackendSubnetConfig = @{
                 Name = "backendsubnet";
-                AddressPrefix = "11.66.0.0/24"; #11.66.0.0 - 11.66.0.255
+                AddressPrefix = "11.56.0.0/24"; #11.66.0.0 - 11.66.0.255
 }
 
 $VmAdminUser = "vikiadmin"
@@ -33,8 +33,8 @@ $VmImageConfig = @{
     Version = "latest"
 }
 
-$ComputerName = "vikiweb01" # Cant be more than 15 Chars (Limitation)
-$VmName = "viki-win-web-server-01"
+$ComputerName = "WinWeb01" # Cant be more than 15 Chars (Limitation)
+$VmName = "WinWeb01"
 $VmSize = "Standard_B1s"
 
 #----------------------------
