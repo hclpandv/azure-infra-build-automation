@@ -9,9 +9,9 @@ DEPLOY_CODE="vikiazclideploy${TIME_STAMP}"
 resource_group="${DEPLOY_CODE}-rg"
 location="westeurope"
 vnet="${DEPLOY_CODE}-vnet"
-vnet_address="192.166.0.0/16"
+vnet_address="192.169.0.0/16"
 subnet="${DEPLOY_CODE}-sbnt"
-subnet_address="192.166.1.0/24"
+subnet_address="192.169.1.0/24"
 nsg="${DEPLOY_CODE}-nsg"
 vm_name="ubuntu-web01"
 vm_size="Standard_B1s"
@@ -67,9 +67,9 @@ az vm open-port --port 80 --priority 110 --resource-group $resource_group --name
 #------------------------------------------------------------------------------------------------------------------
 
 # Output the public IP address to access the site in a web browser
-$ip_address=$(az network public-ip show \
-  --resource-group $resource_group \
-  --name $vm_public_ip \
-  --query [ipAddress])
-
-echo "VM: $vm_name with Public_IP: $ip_address is created. you may access it via browser or SSH"
+echo "VM: $vm_name created details below, access via SSH/Browser"
+echo "============================================================="
+echo "+++++++++++++++++++    OutPut    ++++++++++++++++++++++++++++"
+echo "============================================================="
+az vm list-ip-addresses --name $vm_name --output table
+echo ""
