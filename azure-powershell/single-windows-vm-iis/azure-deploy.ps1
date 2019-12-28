@@ -12,15 +12,15 @@ $DeploymentCode = "vikipsdeploy$((get-date).ToUniversalTime().ToString('yyMMddhh
 $ResourceGroup = "$($DeploymentCode)-rg"
 $Location = "westindia"
 $VnetName = "$($DeploymentCode)-vnet"
-$VnetAddress = "11.56.0.0/22" #11.66.0.0 - 11.66.3.256
+$VnetAddress = "11.66.0.0/22" #11.66.0.0 - 11.66.3.256
 $FrontendSubnetConfig = @{
                 Name = "frontendsubnet";
-                AddressPrefix = "11.56.1.0/24"; #11.66.1.0 - 11.66.1.255 
+                AddressPrefix = "11.66.1.0/24"; #11.66.1.0 - 11.66.1.255 
 }
 
 $BackendSubnetConfig = @{
                 Name = "backendsubnet";
-                AddressPrefix = "11.56.0.0/24"; #11.66.0.0 - 11.66.0.255
+                AddressPrefix = "11.66.0.0/24"; #11.66.0.0 - 11.66.0.255
 }
 
 $VmAdminUser = "vikiadmin"
@@ -52,7 +52,7 @@ $vnet = New-AzVirtualNetwork -Name $VnetName -ResourceGroupName $ResourceGroup `
 
 # Create a public IP address
 $PublicIP = New-AzPublicIpAddress -ResourceGroupName $ResourceGroup -Location $Location `
-  -Name "$($DeploymentCode)-public-ip" -AllocationMethod Static -IdleTimeoutInMinutes 4
+  -Name "$($VmName)-public-ip" -AllocationMethod Static -IdleTimeoutInMinutes 4
 
 # Create an inbound network security group rule for port 22
 $nsgRuleSSH = New-AzNetworkSecurityRuleConfig -Name nsgRuleSSH  -Protocol Tcp `
@@ -69,7 +69,7 @@ $nsg = New-AzNetworkSecurityGroup -ResourceGroupName $ResourceGroup -Location $L
   -Name "$($DeploymentCode)-nsg" -SecurityRules $nsgRuleSSH,$nsgRuleHTTP
 
 # Create a virtual network card and associate with public IP address and NSG
-$nic = New-AzNetworkInterface -Name "$($DeploymentCode)-nic" -ResourceGroupName $ResourceGroup -Location $location `
+$nic = New-AzNetworkInterface -Name "$($VmName)-nic" -ResourceGroupName $ResourceGroup -Location $location `
   -SubnetId $vnet.Subnets[0].Id -PublicIpAddressId $PublicIP.Id -NetworkSecurityGroupId $nsg.Id
 
 # Create a virtual machine configuration
@@ -93,4 +93,4 @@ Set-AzVMExtension -ExtensionName "CustomScript" -ResourceGroupName $ResourceGrou
   -Settings $PublicSettings -Location $Location
 
 # Get IP address of VM
-(Get-AzPublicIpAddress -Name "$($DeploymentCode)-public-ip").IpAddress
+(Get-AzPublicIpAddress -Name "$($VmName)-public-ip").IpAddress
