@@ -5,7 +5,7 @@
 
 #### How to deploy ?
 
-**Az-Cli*
+**Az-Cli**
 
 ```bash
 # Clone this repo
@@ -23,7 +23,7 @@ az group deployment create --resource-group target_resource_group_name --templat
 az group delete --name target_resource_group_name --verbose --no-wait -y
 ```
 
-**PowerShell*
+**PowerShell**
 
 ```powershell
 #clone this repo
