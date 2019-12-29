@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_ubuntu_name": {
+            "value": "ubuntu-web01"
+        },
+        "publicIPAddresses_ubuntu_ip_name": {
+            "value": "ubuntu-web01-ip"
+        },
+        "networkInterfaces_ubuntu_nic_name": {
+            "value": "ubuntu-web01-nic"
+        },
+        "storageAccounts_name": {
+            "value": "vikimanualdeploy19122812"
+        },
+        "virtualNetworks_vnet_name": {
+            "value": "vikimanualdeploy1912281219-vnet"
+        },
+        "networkSecurityGroups_nsg_name": {
+            "value": "vikimanualdeploy1912281219-nsg"
+        },
+        "vm_admin_username": {
+            "value": "vikiadmin"
+        },
+        "vm_admin_password": {
+            "value": "secretpassword"
+        }
+    }
+  }
