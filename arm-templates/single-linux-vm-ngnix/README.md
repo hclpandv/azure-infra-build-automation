@@ -1,7 +1,8 @@
 ## TO DO:
 * Too many hardcoding. Not Ready for the deployment yet
-* Param needs a revamp
-* Variable needed for auto gen strings (*-nic, *-vnet etc)
+* ~~Param needs a revamp~~
+* ~~Variable needed for auto gen strings (*-nic, *-vnet etc)~~
+* ngnix provisioning with cloud-init
 ---
 ## ARM Template : Single Linux VM nginx
 
