@@ -43,18 +43,18 @@
         "imageOffer": "UbuntuServer",
         "OSDiskName": "[concat(parameters('virtualMachineName'), '_OsDisk_1_vikidisk')]",
         "nicName": "[concat(parameters('virtualMachineName'), '-nic')]",
-        "vnetAddressPrefix": "192.162.0.0/22",
+        "vnetAddressPrefix": "192.163.0.0/22",
         "frontendSubnetName": "vikiarmdeploy1912290817-frontend-sbnt",
-        "frontendSubnetPrefix": "192.162.1.0/24",
+        "frontendSubnetPrefix": "192.163.1.0/24",
         "backendSubnetName": "vikiarmdeploy1912290817-backend-sbnt",
-        "backendSubnetPrefix": "192.162.0.0/24",
+        "backendSubnetPrefix": "192.163.0.0/24",
         "middlewareSubnetName": "vikiarmdeploy1912290817-middleware-sbnt",       
-        "middlewareSubnetPrefix": "192.162.2.0/24",
+        "middlewareSubnetPrefix": "192.163.2.0/24",
         "storageAccountType": "Standard_LRS",
         "publicIPAddressName": "[concat(parameters('virtualMachineName'), '-ip')]",
         "publicIPAddressType": "Dynamic",
-        "virtualNetworkName": "[concat(resourceGroup().name, '-nsg')]",
-        "networkSecurityGroupName": "[concat(resourceGroup().name, '-vnet')]"
+        "virtualNetworkName": "[concat(resourceGroup().name, '-vnet')]",
+        "networkSecurityGroupName": "[concat(resourceGroup().name, '-nsg')]"
     },
     "resources": [
         {
