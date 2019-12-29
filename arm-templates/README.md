@@ -1,11 +1,11 @@
 ## Azure Resource Manager (ARM) Templates : Infra Build Automation Scripts
 
 #### List of ARM Templates
-* [single-linux-vm-ngnix](https://raw.githubusercontent.com/hclpandv/azure-infra-build-automation/dev/arm-templates/single-linux-vm-ngnix/azureDeploy.json)
+[single-linux-vm-ngnix](https://raw.githubusercontent.com/hclpandv/azure-infra-build-automation/dev/arm-templates/single-linux-vm-ngnix/azureDeploy.json)
 
 #### How to deploy ?
 
-* Az-Cli
+**Az-Cli*
 
 ```bash
 # Clone this repo
@@ -23,7 +23,7 @@ az group deployment create --resource-group target_resource_group_name --templat
 az group delete --name target_resource_group_name --verbose --no-wait -y
 ```
 
-* PowerShell
+**PowerShell*
 
 ```powershell
 #clone this repo
