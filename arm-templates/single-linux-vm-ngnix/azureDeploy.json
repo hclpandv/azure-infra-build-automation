@@ -2,28 +2,12 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "virtualMachines_ubuntu_name": {
+        "virtualMachineName": {
             "defaultValue": "ubuntu-web01",
-            "type": "String"
-        },
-        "publicIPAddresses_ubuntu_ip_name": {
-            "defaultValue": "ubuntu-web01-ip",
-            "type": "String"
-        },
-        "networkInterfaces_ubuntu_nic_name": {
-            "defaultValue": "ubuntu-web01-nic",
             "type": "String"
         },
         "storageAccounts_name": {
             "defaultValue": "vikimanualdeploy19122812",
-            "type": "String"
-        },
-        "virtualNetworks_vnet_name": {
-            "defaultValue": "vikimanualdeploy1912281219-vnet",
-            "type": "String"
-        },
-        "networkSecurityGroups_nsg_name": {
-            "defaultValue": "vikimanualdeploy1912281219-nsg",
             "type": "String"
         },
         "vm_admin_username": {
@@ -35,12 +19,44 @@
             "type": "String"
         }
     },
-    "variables": {},
+    "variables": {
+        "imagePublisher": "Canonical",
+        "imageOffer": "UbuntuServer",
+        "OSDiskName": "osdiskforlinuxsimple",
+        "nicName": "[concat(parameters('virtualMachineName'), '-nic')]",
+        "vnetAddressPrefix": "192.161.0.0/22",
+        "frontendSubnetName": "vikiarmdeploy1912290817-frontend-sbnt",
+        "frontendSubnetPrefix": "192.161.1.0/24",
+        "backendSubnetName": "vikiarmdeploy1912290817-backend-sbnt",
+        "backendSubnetPrefix": "192.161.0.0/24",
+        "middlewareSubnetName": "vikiarmdeploy1912290817-middleware-sbnt",       
+        "middlewareSubnetPrefix": "192.161.2.0/24",
+        "storageAccountType": "[variables('storageAccountType')]",
+        "publicIPAddressName": "[concat(parameters('virtualMachineName'), '-ip')]",
+        "publicIPAddressType": "Dynamic",
+        "vmStorageAccountContainerName": "vhds",
+        "vmName": "MyUbuntuVM",
+        "vmSize": "Standard_A0",
+        "virtualNetworkName": "[concat(resourceGroup().name, '-nsg')]",
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+        "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+                "publicKeys": [
+                    {
+                        "path": "[concat('/home/', parameters('vm_admin_username'), '/.ssh/authorized_keys')]",
+                        "keyData": "[parameters('vm_admin_password')]"
+                    }
+               ]
+            }
+        },
+        "networkSecurityGroupName": "[concat(resourceGroup().name, '-vnet')]"
+    },
     "resources": [
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2019-09-01",
-            "name": "[parameters('networkSecurityGroups_nsg_name')]",
+            "name": "[variables('networkSecurityGroupName')]",
             "location": "westindia",
             "properties": {
                 "securityRules": [
@@ -122,7 +138,7 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2019-09-01",
-            "name": "[parameters('publicIPAddresses_ubuntu_ip_name')]",
+            "name": "[variables('publicIPAddressName')]",
             "location": "westindia",
             "sku": {
                 "name": "Basic"
@@ -133,8 +149,8 @@
                 "publicIPAllocationMethod": "Dynamic",
                 "idleTimeoutInMinutes": 4,
                 "dnsSettings": {
-                    "domainNameLabel": "[concat('viki-', parameters('publicIPAddresses_ubuntu_ip_name'))]",
-                    "fqdn": "[concat('viki-', parameters('publicIPAddresses_ubuntu_ip_name'), '.westindia.cloudapp.azure.com')]"
+                    "domainNameLabel": "[concat('viki-', variables('publicIPAddressName'))]",
+                    "fqdn": "[concat('viki-', variables('publicIPAddressName'), '.westindia.cloudapp.azure.com')]"
                 },
                 "ipTags": []
             }
@@ -145,7 +161,7 @@
             "name": "[parameters('storageAccounts_name')]",
             "location": "westindia",
             "sku": {
-                "name": "Standard_LRS",
+                "name": "[variables('storageAccountType')]",
                 "tier": "Standard"
             },
             "kind": "Storage",
@@ -173,9 +189,9 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups/securityRules",
             "apiVersion": "2019-09-01",
-            "name": "[concat(parameters('networkSecurityGroups_nsg_name'), '/nsgRuleHTTP')]",
+            "name": "[concat(variables('networkSecurityGroupName'), '/nsgRuleHTTP')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
             ],
             "properties": {
                 "description": "nsgRuleHTTP",
@@ -196,9 +212,9 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups/securityRules",
             "apiVersion": "2019-09-01",
-            "name": "[concat(parameters('networkSecurityGroups_nsg_name'), '/nsgRuleHTTPS')]",
+            "name": "[concat(variables('networkSecurityGroupName'), '/nsgRuleHTTPS')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
             ],
             "properties": {
                 "description": "nsgRuleHTTPS",
@@ -219,9 +235,9 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups/securityRules",
             "apiVersion": "2019-09-01",
-            "name": "[concat(parameters('networkSecurityGroups_nsg_name'), '/nsgRuleRDP')]",
+            "name": "[concat(variables('networkSecurityGroupName'), '/nsgRuleRDP')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
             ],
             "properties": {
                 "description": "nsgRuleRDP",
@@ -242,9 +258,9 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups/securityRules",
             "apiVersion": "2019-09-01",
-            "name": "[concat(parameters('networkSecurityGroups_nsg_name'), '/nsgRuleSSH')]",
+            "name": "[concat(variables('networkSecurityGroupName'), '/nsgRuleSSH')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
             ],
             "properties": {
                 "description": "nsgRuleSSH",
@@ -265,22 +281,22 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-09-01",
-            "name": "[parameters('virtualNetworks_vnet_name')]",
+            "name": "[variables('virtualNetworkName')]",
             "location": "westindia",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
             ],
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "192.160.0.0/22"
+                        "[variables('vnetAddressPrefix')]"
                     ]
                 },
                 "subnets": [
                     {
-                        "name": "vikiarmdeploy1912290817-backend-sbnt",
+                        "name": "[variables('backendSubnetName')]",
                         "properties": {
-                            "addressPrefix": "192.160.0.0/24",
+                            "addressPrefix": "[variables('backendSubnetPrefix')]",
                             "serviceEndpoints": [],
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
@@ -288,9 +304,9 @@
                         }
                     },
                     {
-                        "name": "vikiarmdeploy1912290817-middleware-sbnt",
+                        "name": "[variables('middlewareSubnetName')]",
                         "properties": {
-                            "addressPrefix": "192.160.2.0/24",
+                            "addressPrefix": "[variables('middlewareSubnetPrefix')]",
                             "serviceEndpoints": [],
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
@@ -298,11 +314,11 @@
                         }
                     },
                     {
-                        "name": "vikiarmdeploy1912290817-frontend-sbnt",
+                        "name": "[variables('frontendSubnetName')]",
                         "properties": {
-                            "addressPrefix": "192.160.1.0/24",
+                            "addressPrefix": "[variables('frontendSubnetPrefix')]",
                             "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
                             },
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
@@ -318,12 +334,12 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2019-09-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_name'), '/vikiarmdeploy1912290817-backend-sbnt')]",
+            "name": "[concat(variables('virtualNetworkName'), '/', variables('backendSubnetName'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
             ],
             "properties": {
-                "addressPrefix": "192.160.0.0/24",
+                "addressPrefix": "[variables('backendSubnetPrefix')]",
                 "serviceEndpoints": [],
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
@@ -333,12 +349,12 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2019-09-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_name'), '/vikiarmdeploy1912290817-middleware-sbnt')]",
+            "name": "[concat(variables('virtualNetworkName'), '/', variables('middlewareSubnetName'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
             ],
             "properties": {
-                "addressPrefix": "192.160.2.0/24",
+                "addressPrefix": "[variables('middlewareSubnetPrefix')]",
                 "serviceEndpoints": [],
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
@@ -353,7 +369,7 @@
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_name'))]"
             ],
             "sku": {
-                "name": "Standard_LRS"
+                "name": "[variables('storageAccountType')]"
             },
             "properties": {
                 "cors": {
@@ -367,10 +383,10 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2019-03-01",
-            "name": "[parameters('virtualMachines_ubuntu_name')]",
+            "name": "[parameters('virtualMachineName')]",
             "location": "westindia",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_ubuntu_nic_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
                 "[resourceId('Microsoft.Storage/StorageAccounts', parameters('storageAccounts_name'))]"
             ],
             "properties": {
@@ -379,14 +395,14 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "Canonical",
-                        "offer": "UbuntuServer",
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
                         "sku": "18.04-LTS",
                         "version": "latest"
                     },
                     "osDisk": {
                         "osType": "Linux",
-                        "name": "[concat(parameters('virtualMachines_ubuntu_name'), '_OsDisk_1_2a0e74d5769f4484acfef51b7c6819cd')]",
+                        "name": "[concat(parameters('virtualMachineName'), '_OsDisk_1_2a0e74d5769f4484acfef51b7c6819cd')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -397,7 +413,7 @@
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_ubuntu_name')]",
+                    "computerName": "[parameters('virtualMachineName')]",
                     "adminUsername": "[parameters('vm_admin_username')]",
                     "adminPassword": "[parameters('vm_admin_password')]",
                     "linuxConfiguration": {
@@ -410,7 +426,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_ubuntu_nic_name'))]",
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
                             "properties": {
                                 "primary": true
                             }
@@ -428,11 +444,11 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2019-09-01",
-            "name": "[parameters('networkInterfaces_ubuntu_nic_name')]",
+            "name": "[variables('nicName')]",
             "location": "westindia",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_ubuntu_ip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_name'), 'vikiarmdeploy1912290817-frontend-sbnt')]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('frontendSubnetName'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -442,10 +458,10 @@
                             "privateIPAddress": "192.160.1.4",
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_ubuntu_ip_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_name'), 'vikiarmdeploy1912290817-frontend-sbnt')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('frontendSubnetName'))]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -462,15 +478,15 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2019-09-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_name'), '/vikiarmdeploy1912290817-frontend-sbnt')]",
+            "name": "[concat(variables('virtualNetworkName'), '/', variables('frontendSubnetName'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
             ],
             "properties": {
-                "addressPrefix": "192.160.1.0/24",
+                "addressPrefix": "[variables('frontendSubnetPrefix')]",
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_name'))]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
                 },
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Enabled",
