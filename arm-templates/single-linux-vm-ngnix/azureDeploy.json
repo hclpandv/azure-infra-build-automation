@@ -31,7 +31,7 @@
             "type": "String"
         },
         "vm_admin_password": {
-            "defaultValue": "d0nt%find%m3",
+            "defaultValue": "secretpassword",
             "type": "String"
         }
     },
