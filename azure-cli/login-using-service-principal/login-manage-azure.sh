@@ -12,7 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #--- Main
 
 # Load azure env file
-source $SCRIPT_DIR/azure-sp-cred.sh
+source $SCRIPT_DIR/.env_azure
 
 # Login to Azure using service principal
 az login --service-principal -u $ARM_APP_URL -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
