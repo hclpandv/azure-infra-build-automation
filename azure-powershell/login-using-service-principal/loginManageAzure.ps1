@@ -28,6 +28,12 @@ $pscredential = New-Object System.Management.Automation.PSCredential($env:ARM_CL
 
 Connect-AzAccount -ServicePrincipal -Credential $pscredential -Tenant $env:ARM_TENANT_ID -Verbose
 
+# Exit if Azure Login failed
+if(! $?){
+  Write-Output "Azure Login Failed, Please validate your credentials in azureSpCredEnv.ps1 file"
+  exit 1
+}
+
 # Manage Azure Resources
 Get-AzResourceGroup | ft
 # Create a New Azure Resource Group
