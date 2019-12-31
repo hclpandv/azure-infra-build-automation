@@ -1,6 +1,7 @@
 ## TO DO:
-* Too many hardcoding. Not Ready for the deployment yet
-* ngnix provisioning with cloud-init
+* Too many issues. 
+* Not Ready for the deployment yet
+
 ---
 ## ARM Template : 2-vm-2-vnet-peer
 

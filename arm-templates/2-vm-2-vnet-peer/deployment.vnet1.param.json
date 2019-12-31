@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "virtualMachineName": {
-            "value": "ubuntu-web01"
+            "value": "ubuntu-web03"
         },
         "storageAccountName": {
-            "value": "ubuntuweb01sa"
+            "value": "ubuntuweb03sa"
         },
         "vmAdminUsername": {
             "value": "vikiadmin"
@@ -21,16 +21,16 @@
             "value": "Standard_B1s"
         },
         "vnetAddressPrefix": {
-            "value": "192.168.0.0/22"
+            "value": "192.167.0.0/22"
         },
         "frontendSubnetPrefix": {
-            "value": "192.168.1.0/24"
+            "value": "192.167.1.0/24"
         },
         "backendSubnetPrefix": {
-            "value": "192.168.0.0/24"
+            "value": "192.167.0.0/24"
         },
         "middlewareSubnetPrefix": {
-            "value": "192.168.2.0/24"
+            "value": "192.167.2.0/24"
         }
     }
   }
