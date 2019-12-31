@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineName": {
+            "value": "ubuntu-web01"
+        },
+        "storageAccountName": {
+            "value": "ubuntuweb01sa"
+        },
+        "vmAdminUsername": {
+            "value": "vikiadmin"
+        },
+        "vmAdminPassword": {
+            "value": "s3cretP@ss"
+        },
+        "ubuntuOSVersion": {
+            "value": "18.04-LTS"
+        },
+        "vmSize": {
+            "value": "Standard_B1s"
+        },
+        "vnetAddressPrefix": {
+            "value": "192.168.0.0/22"
+        },
+        "frontendSubnetPrefix": {
+            "value": "192.168.1.0/24"
+        },
+        "backendSubnetPrefix": {
+            "value": "192.168.0.0/24"
+        },
+        "middlewareSubnetPrefix": {
+            "value": "192.168.2.0/24"
+        }
+    }
+  }

@@ -35,6 +35,22 @@
             "metadata": {
                 "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version. Allowed values: 12.04.5-LTS, 14.04.2-LTS, 15.10."
             }
+        },
+        "vnetAddressPrefix": {
+            "defaultValue": "secretpassword",
+            "type": "String"
+        },
+        "frontendSubnetPrefix": {
+            "defaultValue": "secretpassword",
+            "type": "String"
+        },
+        "backendSubnetPrefix": {
+            "defaultValue": "secretpassword",
+            "type": "String"
+        },
+        "middlewareSubnetPrefix": {
+            "defaultValue": "secretpassword",
+            "type": "String"
         }
     },
     "variables": {
@@ -43,13 +59,13 @@
         "imageOffer": "UbuntuServer",
         "OSDiskName": "[concat(parameters('virtualMachineName'), '_OsDisk_1_vikidisk')]",
         "nicName": "[concat(parameters('virtualMachineName'), '-nic')]",
-        "vnetAddressPrefix": "192.163.0.0/22",
+        "vnetAddressPrefix": "[parameters('vnetAddressPrefix')]",
         "frontendSubnetName": "[concat(resourceGroup().name,'-frontend-sbnt')]",
-        "frontendSubnetPrefix": "192.163.1.0/24",
+        "frontendSubnetPrefix": "[parameters('frontendSubnetPrefix')]",
         "backendSubnetName": "[concat(resourceGroup().name,'-backend-sbnt')]",
-        "backendSubnetPrefix": "192.163.0.0/24",
+        "backendSubnetPrefix": "[parameters('backendSubnetPrefix')]",
         "middlewareSubnetName": "[concat(resourceGroup().name,'-middleware-sbnt')]",       
-        "middlewareSubnetPrefix": "192.163.2.0/24",
+        "middlewareSubnetPrefix": "[parameters('middlewareSubnetPrefix')]",
         "storageAccountType": "Standard_LRS",
         "publicIPAddressName": "[concat(parameters('virtualMachineName'), '-ip')]",
         "publicIPAddressType": "Dynamic",
