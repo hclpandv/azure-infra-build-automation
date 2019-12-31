@@ -14,7 +14,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Load azure env file
 if [[ -e $SCRIPT_DIR/.env_azure ]]; then
   source $SCRIPT_DIR/.env_azure
-elif [[ -n "$string" ]]; then
+elif
   echo file .env_azure must exist here, exiting
   exit 1
 fi
