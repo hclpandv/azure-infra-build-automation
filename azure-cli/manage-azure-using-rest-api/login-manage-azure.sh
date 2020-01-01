@@ -21,3 +21,6 @@ fi
 
 # Use curl 
 curl -X GET -H "Authorization: Bearer $AZURE_ACCESS_TOKEN" -H "Content-Type: application/json" https://management.azure.com/subscriptions/$ARM_SUBSCRIPTION_ID/resourcegroups\?api-version\=2017-05-10
+
+# You can also use az cli to access api
+# az rest -m get -u 'https://management.azure.com/subscriptions/${ARM_SUBSCRIPTION_ID}/providers/Microsoft.Web/sites?api-version=2017-05-10'
