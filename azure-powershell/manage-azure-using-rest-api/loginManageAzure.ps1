@@ -71,4 +71,4 @@ $Headers.Add("Authorization","$($Token.tokenType) "+ " " + "$($Token.accessToken
 
 $ResourceGroups = Invoke-RestMethod -Method Get -Uri $ResourceGroupApiUri -Headers $Headers
 
-Write-Output $ResourceGroups
+Write-Output $ResourceGroups.value
