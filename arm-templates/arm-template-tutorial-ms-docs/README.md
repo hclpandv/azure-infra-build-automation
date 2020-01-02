@@ -12,6 +12,7 @@ https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template
 
 ```bash
 az group deployment create \
+--Name addoutputs \
 --resource-group viki-deploy-test-rg \
 --template-file ./azureDeploy.json \
 --parameters @viki-param.json \
