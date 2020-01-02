@@ -17,3 +17,7 @@ az group deployment create \
 --parameters @viki-param.json \
 --mode Incremental
 ```
+
+* How parameters showup in shell
+
+![image](https://user-images.githubusercontent.com/13016162/71651354-e3bb0f00-2d42-11ea-9900-9e6f9f772e69.png)
