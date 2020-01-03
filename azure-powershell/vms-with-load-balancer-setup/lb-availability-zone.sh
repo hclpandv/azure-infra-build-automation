@@ -26,7 +26,7 @@ az network public-ip create \
 
 # Create an Azure Load Balancer.
 az network lb create \
-  --resource-group vikiResourceGroupLB \
+  --resource-group vikiResourceGroup \
   --name vikiLoadBalancer \
   --public-ip-address vikiPublicIP \
   --frontend-ip-name vikiFrontEndPool \
