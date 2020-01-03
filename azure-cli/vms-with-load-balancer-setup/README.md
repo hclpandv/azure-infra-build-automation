@@ -43,6 +43,16 @@ vikiVnet                                           vikiResourceGroup  westeurope
 ## Load Balancer with VMs in different Availability zones
 
 ```
+root@NDL01252:~# az vm list --output table
+
+Name     ResourceGroup      Location    Zones
+-------  -----------------  ----------  -------
+vikiVM1  VIKIRESOURCEGROUP  westeurope  1
+vikiVM2  VIKIRESOURCEGROUP  westeurope  2
+vikiVM3  VIKIRESOURCEGROUP  westeurope  3
+```
+
+```
 root@NDL01252:~# az vm list-ip-addresses --resource-group vikiResourceGroup --output table
 
 VirtualMachine    PrivateIPAddresses
