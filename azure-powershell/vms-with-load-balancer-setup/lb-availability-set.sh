@@ -2,6 +2,9 @@
 
 #-----------------------------------------------------------------------------------------
 # Load balance traffic to VMs for high availability
+# After running the script, you will have three virtual machines, 
+# joined to an Azure Availability Set, 
+# and accessible through an Azure Load Balancer.
 #-----------------------------------------------------------------------------------------
 
 # Create a resource group.
