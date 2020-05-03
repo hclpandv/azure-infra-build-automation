@@ -40,7 +40,7 @@ vikiPublicIP                                       vikiResourceGroup  westeurope
 vikiVnet                                           vikiResourceGroup  westeurope  Microsoft.Network/virtualNetworks
 ```
 
-## Load Balancer with VMs in different Availability zones
+## Load Balancer with VMs in different Availability zones (Must Use Standard SKU Loadbalancer, Basic does not support Availability Zone)
 
 ```
 root@NDL01252:~# az vm list --output table
