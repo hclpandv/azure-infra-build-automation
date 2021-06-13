@@ -66,12 +66,12 @@ az network vnet subnet create \
 # Open Required port
 az network nsg rule create \
     --resource-group $resource_group \
-    --nsg-name $snet_app_name-nsg
+    --nsg-name $snet_app_name-nsg \
     --name AllowWebOnWebSnet \
     --priority 500 \
     --source-address-prefixes "*" \
     --source-port-ranges "*" \
-    --destination-address-prefixes '*'
+    --destination-address-prefixes '*' \
     --destination-port-ranges 80 8080 \
     --access Allow \
     --protocol Tcp \
