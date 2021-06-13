@@ -25,7 +25,7 @@ if [ $current_subscription_id != $subscription_id ]; then
   exit 1
 fi
 
-echo "subs: $subscription_id"
+echo "subs: $current_subscription_id"
 echo "location: $infra_location"
 
 # Deploy Vnets
@@ -64,3 +64,15 @@ az network vnet subnet create \
     --service-endpoints "Microsoft.Storage" "Microsoft.Sql"
 
 # Open Required port
+az network nsg rule create \
+    --resource-group $resource_group \
+    --nsg-name $snet_app_name-nsg
+    --name AllowWebOnWebSnet \
+    --priority 500 \
+    --source-address-prefixes "*" \
+    --source-port-ranges "*" \
+    --destination-address-prefixes '*'
+    --destination-port-ranges 80 8080 \
+    --access Allow \
+    --protocol Tcp \
+    --description "Allow Internet to Web snet on ports 80,8080"
