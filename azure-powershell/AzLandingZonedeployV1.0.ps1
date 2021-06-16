@@ -81,7 +81,7 @@ $vnets | ForEach-Object {
     }
 
     # Deploy Vnets
-    Write-Output "deploying VNET: $($_)"
+    Write-Output "deploying VNET: $($_.name)"
     $vnet = New-AzVirtualNetwork `
         -ResourceGroupName $resourceGroupName `
         -Location $Location `
