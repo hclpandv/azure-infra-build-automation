@@ -59,10 +59,12 @@ $vnets = @(
 New-AzResourceGroup -Name $resourceGroupName -Location $location -Force
 
 $vnets | ForEach-Object {
+    Write-Output "Started working on vnet: $($_)"
     # subnet objects | subnet is not a separate service but a vnet config
     $subnets = @()
     $_.subnets | Where-Object {!($_.name -like "GatewaySubnet")} | ForEach-Object {
         # Deploy subnet NSGs
+        Write-Output "Deploying NSG: $($_.name)-nsg"
         $nsg = New-AzNetworkSecurityGroup `
           -Name "$($_.name)-nsg" `
           -ResourceGroupName $resourceGroupName `
@@ -78,6 +80,7 @@ $vnets | ForEach-Object {
     }
 
     # Deploy Vnets
+    Write-Output "deploying VNET: $($_)"
     $vnet = New-AzVirtualNetwork `
         -ResourceGroupName $resourceGroupName `
         -Location $Location `
