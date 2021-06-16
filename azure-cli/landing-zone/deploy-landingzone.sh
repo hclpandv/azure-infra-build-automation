@@ -3,10 +3,9 @@
 #----------------------------
 # Vars
 #----------------------------
-resource_group="RG_Vikas.Pandey"
-subscription_id="cc934d76-6d72-49cb-a908-81217ad4ae29"  # DCS-EM-AZ3
-current_subscription_id=$(az account show --query 'id' -o tsv)
-infra_location=$(az group show --name $resource_group --query 'location' -o tsv)
+resource_group="rg-landingzone-vikas"
+subscription_id="212dfd1b-6b16-4834-aad1-b093e0cd3382"
+location="westeurope"
 
 vnet_name="vnet-weu-cli-demo-01"
 vnet_cidr="172.17.0.0/22" #1024 IPs
@@ -20,20 +19,21 @@ snet_db_cidr="172.17.2.0/28" #(16-5 | 11 Available)
 # Azure Resource Deployments
 #-----------------------------
 # safety switch
+current_subscription_id=$(az account show --query 'id' -o tsv)
 if [ $current_subscription_id != $subscription_id ]; then
   echo "Azure Login issue, Please validate you are logged in to correct subscription"
   exit 1
 fi
 
-echo "subs: $current_subscription_id"
-echo "location: $infra_location"
+# Create a Resourcegroup
+az group create --name $resource_group --location $location
 
 # Deploy Vnets
 az network vnet create \
     --resource-group $resource_group \
     --name $vnet_name \
     --address-prefix $vnet_cidr \
-    --location $infra_location
+    --location $location
 
 # Deploy NSGs
 az network nsg create --resource-group $resource_group --name $snet_web_name-nsg
@@ -63,16 +63,18 @@ az network vnet subnet create \
     --network-security-group $snet_db_name-nsg \
     --service-endpoints "Microsoft.Storage" "Microsoft.Sql"
 
-# Open Required port
+# Create an NSG rule to allow HTTP traffic in from the Internet to the web subnet.
 az network nsg rule create \
     --resource-group $resource_group \
     --nsg-name $snet_web_name-nsg \
     --name AllowWebOnWebSnet \
-    --priority 500 \
-    --source-address-prefixes "*" \
-    --source-port-ranges "*" \
-    --destination-address-prefixes '*' \
-    --destination-port-ranges 80 8080 443 \
     --access Allow \
     --protocol Tcp \
+    --priority 500 \
+    --source-address-prefix Internet \
+    --source-port-range "*" \
+    --destination-address-prefix "*" \
+    --destination-port-range 80 443
     --description "Allow Internet to Web snet on ports 80,8080"
+
+
