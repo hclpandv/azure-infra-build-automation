@@ -10,17 +10,17 @@ $vnetdef = @{
     "cidr" = "172.17.0.0/22" #1024 IPs
     "subnets" = @(
         @{  
-            "name" = "web"
+            "name" = "snet-web"
             "cidr" = "172.17.0.0/27" #(32-5 | 27 Available)
             "serviceEndpoints" = @()
         }
         @{
-            "name" = "app"
+            "name" = "snet-app"
             "cidr" = "172.17.1.0/26" #(64-5 | 59 Available)
             "serviceEndpoints" = @()
         }
         @{
-            "name" = "db"
+            "name" = "snet-db"
             "cidr" = "172.17.2.0/28" #(16-5 | 11 Available)
             "serviceEndpoints" = @("Microsoft.Storage", "Microsoft.Sql")
         }    
