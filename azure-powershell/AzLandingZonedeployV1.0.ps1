@@ -58,15 +58,21 @@ $vnets = @(
 # Create a resource group.
 New-AzResourceGroup -Name $resourceGroupName -Location $location -Force
 
-
 $vnets | ForEach-Object {
     # subnet objects | subnet is not a separate service but a vnet config
     $subnets = @()
     $_.subnets | ForEach-Object {
-        $subnetConfig  = New-AzVirtualNetworkSubnetConfig `
+        # Deploy subnet NSGs
+        $nsg = New-AzNetworkSecurityGroup `
+          -Name $($_.name)-nsg `
+          -ResourceGroupName $resourceGroupName `
+          -Location $Location
+        # Define subnet config
+        $subnetConfig = New-AzVirtualNetworkSubnetConfig `
             -Name $_.name `
             -AddressPrefix $_.cidr `
-            -ServiceEndpoint $_.serviceEndpoints
+            -ServiceEndpoint $_.serviceEndpoints `
+            -NetworkSecurityGroup $nsg
         $subnets += $subnetConfig
     }
 
