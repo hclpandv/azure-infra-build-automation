@@ -75,7 +75,7 @@ $vnets | ForEach-Object {
         -ResourceGroupName $resourceGroupName `
         -Location $Location `
         -Name $_.name `
-        -AddressPrefix $vnetdef.cidr `
+        -AddressPrefix $_.cidr `
         -Subnet $subnets `
         -Force    
 }
