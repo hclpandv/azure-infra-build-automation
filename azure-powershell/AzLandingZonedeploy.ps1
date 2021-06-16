@@ -41,14 +41,13 @@ if((Get-AzContext).Subscription.Id -ne $subscriptionId){
 New-AzResourceGroup -Name $resourceGroupName -Location $location
 
 # subnet objects | subnet is not a separate service but a vnet config
-$objs = @()
-$subnets = $vnetdef.subnets | ForEach-Object {
+$subnets = @()
+$vnetdef.subnets | ForEach-Object {
     $subnetConfig  = New-AzVirtualNetworkSubnetConfig `
         -Name $_.name `
         -AddressPrefix $_.cidr `
-        -ServiceEndpoint $_.serviceEndpoints `
-    $objs += $subnetConfig
-    $objs
+        -ServiceEndpoint $_.serviceEndpoints
+    $subnets += $subnetConfig
 }
 
 # Deploy Vnets
@@ -57,5 +56,5 @@ $vnet = New-AzVirtualNetwork `
     -Location $Location `
     -Name $vnetdef.name `
     -AddressPrefix $vnetdef.cidr `
-    -Subnet $
+    -Subnet $subnets `
     -Force
