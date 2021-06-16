@@ -38,7 +38,7 @@ if((Get-AzContext).Subscription.Id -ne $subscriptionId){
 }
 
 # Create a resource group.
-New-AzResourceGroup -Name $resourceGroupName -Location $location
+New-AzResourceGroup -Name $resourceGroupName -Location $location -Force
 
 # subnet objects | subnet is not a separate service but a vnet config
 $subnets = @()
