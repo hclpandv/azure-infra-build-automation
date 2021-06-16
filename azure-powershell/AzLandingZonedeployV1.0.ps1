@@ -11,40 +11,40 @@ $vnets = @(
         "cidr" = "172.17.0.0/22" #1024 IPs
         "subnets" = @(
             @{  
-                "name" = "snet-web"
+                "name" = "snet-hub-mgmt"
                 "cidr" = "172.17.0.0/27" #(32-5 | 27 Available)
                 "serviceEndpoints" = @()
             }
             @{
-                "name" = "snet-app"
+                "name" = "snet-hub-dmz"
                 "cidr" = "172.17.1.0/26" #(64-5 | 59 Available)
                 "serviceEndpoints" = @()
             }
             @{
-                "name" = "snet-db"
+                "name" = "GatewaySubnet"
                 "cidr" = "172.17.2.0/28" #(16-5 | 11 Available)
-                "serviceEndpoints" = @("Microsoft.Storage", "Microsoft.Sql")
+                "serviceEndpoints" = @()
             }    
         ) 
     }
     #spoke vnet 1
     @{ 
         "name" = "vnet-weu-spoke-01"
-        "cidr" = "172.17.0.0/22" #1024 IPs
+        "cidr" = "172.18.0.0/22" #1024 IPs
         "subnets" = @(
             @{  
-                "name" = "snet-web"
-                "cidr" = "172.17.0.0/27" #(32-5 | 27 Available)
+                "name" = "snet-spoke1-web"
+                "cidr" = "172.18.0.0/27" #(32-5 | 27 Available)
                 "serviceEndpoints" = @()
             }
             @{
-                "name" = "snet-app"
-                "cidr" = "172.17.1.0/26" #(64-5 | 59 Available)
+                "name" = "snet-spoke1-web"
+                "cidr" = "172.18.1.0/26" #(64-5 | 59 Available)
                 "serviceEndpoints" = @()
             }
             @{
-                "name" = "snet-db"
-                "cidr" = "172.17.2.0/28" #(16-5 | 11 Available)
+                "name" = "snet-spoke1-web"
+                "cidr" = "172.18.2.0/28" #(16-5 | 11 Available)
                 "serviceEndpoints" = @("Microsoft.Storage", "Microsoft.Sql")
             }    
         ) 
@@ -64,9 +64,10 @@ $vnets | ForEach-Object {
     $_.subnets | ForEach-Object {
         # Deploy subnet NSGs
         $nsg = New-AzNetworkSecurityGroup `
-          -Name $($_.name)-nsg `
+          -Name "$($_.name)-nsg" `
           -ResourceGroupName $resourceGroupName `
-          -Location $Location
+          -Location $Location `
+          -Force
         # Define subnet config
         $subnetConfig = New-AzVirtualNetworkSubnetConfig `
             -Name $_.name `
