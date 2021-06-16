@@ -1,13 +1,12 @@
 ﻿#----------------------------
 # Vars
 #----------------------------
-
-$resourceGroupName = "RG_Vikas.Pandey"
-$subscriptionId    = "cc934d76-6d72-49cb-a908-81217ad4ae29"  # DCS-EM-AZ3
-$infraLocation     = (Get-AzResourceGroup -name $resourceGroupName).Location
+$resourceGroupName = "rg-landingzone-vikas"
+$subscriptionId    = "212dfd1b-6b16-4834-aad1-b093e0cd3382" 
+$Location          = "westeurope"
 
 $vnetdef = @{ 
-    "name" = "vnet-weu-demo-03"
+    "name" = "vnet-weu-demo-01"
     "cidr" = "172.17.0.0/22" #1024 IPs
     "subnets" = @(
         @{  
@@ -38,22 +37,25 @@ if((Get-AzContext).Subscription.Id -ne $subscriptionId){
     exit
 }
 
-# Deploy Vnets
-$vnet = New-AzVirtualNetwork `
-    -ResourceGroupName $resourceGroupName `
-    -Location $infraLocation `
-    -Name $vnetdef.name `
-    -AddressPrefix $vnetdef.cidr `
-    -Force
+# Create a resource group.
+New-AzResourceGroup -Name $resourceGroupName -Location $location
 
-# Add subnets
-$vnetdef.subnets | ForEach-Object {
-    $subnetConfig  = Add-AzVirtualNetworkSubnetConfig `
+# subnet objects | subnet is not a separate service but a vnet config
+$objs = @()
+$subnets = $vnetdef.subnets | ForEach-Object {
+    $subnetConfig  = New-AzVirtualNetworkSubnetConfig `
         -Name $_.name `
         -AddressPrefix $_.cidr `
         -ServiceEndpoint $_.serviceEndpoints `
-        -VirtualNetwork $vnet
-
+    $objs += $subnetConfig
+    $objs
 }
-#commit the changes
-$vnet | Set-AzVirtualNetwork
+
+# Deploy Vnets
+$vnet = New-AzVirtualNetwork `
+    -ResourceGroupName $resourceGroupName `
+    -Location $Location `
+    -Name $vnetdef.name `
+    -AddressPrefix $vnetdef.cidr `
+    -Subnet $
+    -Force
