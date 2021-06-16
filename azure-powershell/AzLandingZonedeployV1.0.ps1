@@ -59,7 +59,7 @@ $vnets = @(
 New-AzResourceGroup -Name $resourceGroupName -Location $location -Force
 
 $vnets | ForEach-Object {
-    Write-Output "Started working on vnet: $($_)"
+    Write-Output "Started working on vnet: $($_.name)"
     # subnet objects | subnet is not a separate service but a vnet config
     $subnets = @()
     $_.subnets | Where-Object {!($_.name -like "GatewaySubnet")} | ForEach-Object {
