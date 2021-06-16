@@ -38,12 +38,12 @@ $vnets = @(
                 "serviceEndpoints" = @()
             }
             @{
-                "name" = "snet-spoke1-web"
+                "name" = "snet-spoke1-app"
                 "cidr" = "172.18.1.0/26" #(64-5 | 59 Available)
                 "serviceEndpoints" = @()
             }
             @{
-                "name" = "snet-spoke1-web"
+                "name" = "snet-spoke1-db"
                 "cidr" = "172.18.2.0/28" #(16-5 | 11 Available)
                 "serviceEndpoints" = @("Microsoft.Storage", "Microsoft.Sql")
             }    
