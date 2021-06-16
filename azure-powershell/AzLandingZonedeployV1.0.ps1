@@ -54,6 +54,7 @@ $vnets = @(
 #-----------------------------
 # Azure Resource Deployments
 #-----------------------------
+Set-Item Env:\SuppressAzurePowerShellBreakingChangeWarnings "true"
 
 # Create a resource group.
 New-AzResourceGroup -Name $resourceGroupName -Location $location -Force
