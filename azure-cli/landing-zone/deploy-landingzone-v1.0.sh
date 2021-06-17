@@ -48,7 +48,7 @@ done
 # Create an NSG rule to allow HTTP traffic in from the Internet to the web subnet.
 az network nsg rule create \
     --resource-group $resource_group \
-    --nsg-name $snet_web_name-nsg \
+    --nsg-name snet-web-nsg \
     --name AllowWebOnWebSnet \
     --access Allow \
     --protocol Tcp \
@@ -56,7 +56,7 @@ az network nsg rule create \
     --source-address-prefix Internet \
     --source-port-range "*" \
     --destination-address-prefix "*" \
-    --destination-port-range 80 443
+    --destination-port-range 80 443 \
     --description "Allow Internet to Web snet on ports 80,8080"
 
 # future Help
