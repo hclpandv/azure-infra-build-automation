@@ -21,11 +21,14 @@ $vmImage       = "UbuntuLTS"
 $vnet          = Get-AzVirtualNetwork -ResourceGroupName $vnetRg -Name $vnetName
 $subnetId      = ($vnet.Subnets | Where-Object {$_.name -eq $snetName}).id
 
+# Create a resource group.
+New-AzResourceGroup -Name $resourceGroupName -Location $location -Force
+
 # Deploy a NIC in the target vnet/subnet
 $nic = New-AzNetworkInterface `
     -Name "$($vmName)-nic" `
     -ResourceGroupName $ResourceGroupName `
-    -Location $LocationName `
+    -Location $Location `
     -SubnetId $subnetId
 
 # Create a virtual machine configuration
