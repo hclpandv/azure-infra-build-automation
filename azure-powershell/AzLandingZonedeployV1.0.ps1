@@ -1,8 +1,10 @@
 ﻿#----------------------------
 # Vars
 #----------------------------
-$resourceGroupName = "rg-landingzone-vikas"
-$Location          = "westeurope"
+param (
+    [string]$resourceGroupName = "rg-landingzone-vikas"
+    [string]$Location          = "westeurope"
+)
 
 $vnets = @(
     #Hub vnet
@@ -64,20 +66,30 @@ $vnets | ForEach-Object {
     # subnet objects | subnet is not a separate service but a vnet config
     $subnets = @()
     $_.subnets | Where-Object {!($_.name -like "GatewaySubnet")} | ForEach-Object {
-        # Deploy subnet NSGs
-        Write-Output "Deploying NSG: $($_.name)-nsg"
-        $nsg = New-AzNetworkSecurityGroup `
-          -Name "$($_.name)-nsg" `
-          -ResourceGroupName $resourceGroupName `
-          -Location $Location `
-          -Force
-        # Define subnet config
-        $subnetConfig = New-AzVirtualNetworkSubnetConfig `
-            -Name $_.name `
-            -AddressPrefix $_.cidr `
-            -ServiceEndpoint $_.serviceEndpoints `
-            -NetworkSecurityGroup $nsg
-        $subnets += $subnetConfig
+        if(!($_.name -like "GatewaySubnet")){
+            # Deploy subnet NSGs
+            Write-Output "Deploying NSG: $($_.name)-nsg"
+            $nsg = New-AzNetworkSecurityGroup `
+            -Name "$($_.name)-nsg" `
+            -ResourceGroupName $resourceGroupName `
+            -Location $Location `
+            -Force
+            # Define subnet config
+            $subnetConfig = New-AzVirtualNetworkSubnetConfig `
+                -Name $_.name `
+                -AddressPrefix $_.cidr `
+                -ServiceEndpoint $_.serviceEndpoints `
+                -NetworkSecurityGroup $nsg
+            $subnets += $subnetConfig
+        }
+        else{
+            # Define subnet config for Gateway subnet
+            $subnetConfig = New-AzVirtualNetworkSubnetConfig `
+                -Name $_.name `
+                -AddressPrefix $_.cidr `
+                -ServiceEndpoint $_.serviceEndpoints
+            $subnets += $subnetConfig
+        }
     }
 
     # Deploy Vnets
