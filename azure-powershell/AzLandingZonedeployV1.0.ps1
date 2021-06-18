@@ -65,7 +65,7 @@ $vnets | ForEach-Object {
     Write-Output "Started working on vnet: $($_.name)"
     # subnet objects | subnet is not a separate service but a vnet config
     $subnets = @()
-    $_.subnets | Where-Object {!($_.name -like "GatewaySubnet")} | ForEach-Object {
+    $_.subnets | ForEach-Object {
         if(!($_.name -like "GatewaySubnet")){
             # Deploy subnet NSGs
             Write-Output "Deploying NSG: $($_.name)-nsg"
