@@ -17,16 +17,11 @@ $AdminPassword = ConvertTo-SecureString "d0nt%find%m3" -AsPlainText -Force
 $vmCred        = New-Object System.Management.Automation.PSCredential($AdminUser, $AdminPassword)
 $computerName  = "app01"
 $vmSize        = "Standard_B1s"
-
-$vmImage = Set-AzVMSourceImage `
-    -PublisherName Canonical `
-    -Offer UbuntuServer `
-    -Skus 20_04-daily-lts `
-    -Version latest
+$vmImage       = "UbuntuLTS"
 
 # VM Deployment
 New-AzVm `
-    -image  `
+    -image  $vmImage `
     -size $vmSize `
     -ResourceGroupName $resourceGroupName `
     -Name $vmName `
