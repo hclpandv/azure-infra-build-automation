@@ -2,7 +2,7 @@
 # Vars
 #----------------------------
 param (
-    [string]$resourceGroupName = "rg-landingzone-vikas"
+    [string]$resourceGroupName = "rg-landingzone-vikas",
     [string]$Location          = "westeurope"
 )
 
@@ -75,6 +75,7 @@ $vnets | ForEach-Object {
             -Location $Location `
             -Force
             # Define subnet config
+            Write-Output "Config SNET: $($_.name)"
             $subnetConfig = New-AzVirtualNetworkSubnetConfig `
                 -Name $_.name `
                 -AddressPrefix $_.cidr `
@@ -84,6 +85,7 @@ $vnets | ForEach-Object {
         }
         else{
             # Define subnet config for Gateway subnet
+            Write-Output "Config SNET: $($_.name)"
             $subnetConfig = New-AzVirtualNetworkSubnetConfig `
                 -Name $_.name `
                 -AddressPrefix $_.cidr `
