@@ -4,8 +4,9 @@
 param (
     [string]$resourceGroupName = "rg-LearningApp-001",
     [string]$Location          = "westeurope",
-    [string]$vnet              = "vnet-hub-weu-001",
-    [string]$snet              = "snet-hub-mgmt",
+    [string]$vnetName          = "vnet-hub-weu-001",
+    [string]$vnetRg            = "rg-landingzone-vikas",
+    [string]$snetName          = "snet-hub-mgmt",
     [string]$vmName            = "mgmt01"
 )
 
@@ -15,18 +16,26 @@ param (
 $AdminUser     = "vikiadmin"
 $AdminPassword = ConvertTo-SecureString "d0nt%find%m3" -AsPlainText -Force
 $vmCred        = New-Object System.Management.Automation.PSCredential($AdminUser, $AdminPassword)
-$computerName  = "app01"
 $vmSize        = "Standard_B1s"
 $vmImage       = "UbuntuLTS"
+$vnet          = Get-AzVirtualNetwork -ResourceGroupName $vnetRg -Name $vnetName
+$subnetId      = ($vnet.Subnets | Where-Object {$_.name -eq $snetName}).id
+
+# Deploy a NIC in the target vnet/subnet
+$nic = New-AzNetworkInterface `
+    -Name "$($vmName)-nic" `
+    -ResourceGroupName $ResourceGroupName `
+    -Location $LocationName `
+    -SubnetId $subnetId
+
+# Create a virtual machine configuration
+$vmConfig = New-AzVMConfig -VMName $vmName -VMSize $vmSize `
+    | Set-AzVMOperatingSystem -Linux -ComputerName $vmName -Credential $vmCred `
+    | Set-AzVMSourceImage -PublisherName Canonical -Offer UbuntuServer -Skus 20_04-daily-lts -Version latest `
+    | Add-AzVMNetworkInterface -Id $nic.Id
 
 # VM Deployment
 New-AzVm `
-    -image  $vmImage `
-    -size $vmSize `
     -ResourceGroupName $resourceGroupName `
-    -Name $vmName `
     -Location $Location `
-    -Credential $vmCred `
-    -VirtualNetworkName $vnet `
-    -SubnetName $snet `
-    -verbose
+    -VM $vmConfig
