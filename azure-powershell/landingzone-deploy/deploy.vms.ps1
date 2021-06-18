@@ -28,7 +28,8 @@ $nic = New-AzNetworkInterface `
     -Name "$($vmName)-nic" `
     -ResourceGroupName $ResourceGroupName `
     -Location $Location `
-    -SubnetId $subnetId
+    -SubnetId $subnetId `
+    -Force
 
 # Create a virtual machine configuration
 $vmConfig = New-AzVMConfig -VMName $vmName -VMSize $vmSize `
@@ -40,4 +41,5 @@ $vmConfig = New-AzVMConfig -VMName $vmName -VMSize $vmSize `
 New-AzVm `
     -ResourceGroupName $resourceGroupName `
     -Location $Location `
-    -VM $vmConfig
+    -VM $vmConfig `
+    -Verbose
