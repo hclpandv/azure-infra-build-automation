@@ -17,7 +17,6 @@ $AdminUser     = "vikiadmin"
 $AdminPassword = ConvertTo-SecureString "d0nt%find%m3" -AsPlainText -Force
 $vmCred        = New-Object System.Management.Automation.PSCredential($AdminUser, $AdminPassword)
 $vmSize        = "Standard_B1s"
-$vmImage       = "UbuntuLTS"
 $vnet          = Get-AzVirtualNetwork -ResourceGroupName $vnetRg -Name $vnetName
 $subnetId      = ($vnet.Subnets | Where-Object {$_.name -eq $snetName}).id
 
@@ -34,7 +33,7 @@ $nic = New-AzNetworkInterface `
 # Create a virtual machine configuration
 $vmConfig = New-AzVMConfig -VMName $vmName -VMSize $vmSize `
     | Set-AzVMOperatingSystem -Linux -ComputerName $vmName -Credential $vmCred `
-    | Set-AzVMSourceImage -PublisherName Canonical -Offer UbuntuServer -Skus 20_04-daily-lts -Version latest `
+    | Set-AzVMSourceImage -PublisherName Canonical -Offer UbuntuServer -Skus 18.04-LTS -Version latest `
     | Add-AzVMNetworkInterface -Id $nic.Id
 
 # VM Deployment
