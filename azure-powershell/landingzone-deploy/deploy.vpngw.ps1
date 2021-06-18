@@ -4,7 +4,7 @@
 param (
     [string]$resourceGroupName = "rg-landingzone-vikas",
     [string]$Location          = "westeurope",
-    [string]$vnet              = "vnet-hub-weu-001"
+    [string]$vnetName          = "vnet-hub-weu-001"
 )
 
 Write-Output "Requesting a Pulic IP on Azure in $($location) azure location"
@@ -12,10 +12,11 @@ $gwpip = New-AzPublicIpAddress `
     -Name "pip-vpngw-learning-weu-001" `
     -ResourceGroupName $resourceGroupName `
     -Location $Location `
-    -AllocationMethod Dynamic
+    -AllocationMethod Dynamic `
+    -Force
 
 
-$vnet = Get-AzVirtualNetwork -Name $vnet -ResourceGroupName $resourceGroupName
+$vnet = Get-AzVirtualNetwork -Name $vnetName -ResourceGroupName $resourceGroupName
 $subnet = Get-AzVirtualNetworkSubnetConfig -Name 'GatewaySubnet' -VirtualNetwork $vnet
 $gwipconfig = New-AzVirtualNetworkGatewayIpConfig `
     -Name gwipconfig1 `
@@ -31,3 +32,4 @@ New-AzVirtualNetworkGateway `
     -GatewayType Vpn `
     -VpnType RouteBased `
     -GatewaySku VpnGw1
+    -Verbose
