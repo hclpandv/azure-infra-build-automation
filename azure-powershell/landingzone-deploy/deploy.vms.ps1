@@ -7,7 +7,8 @@ param (
     [string]$vnetName          = "vnet-hub-weu-001",
     [string]$vnetRg            = "rg-landingzone-vikas",
     [string]$snetName          = "snet-hub-mgmt",
-    [string]$vmName            = "mgmt01"
+    [string]$vmName            = "mgmt01",
+    [switch]$publicIpNeeded
 )
 
 #----------------------------
@@ -23,13 +24,34 @@ $subnetId      = ($vnet.Subnets | Where-Object {$_.name -eq $snetName}).id
 # Create a resource group.
 New-AzResourceGroup -Name $resourceGroupName -Location $location -Force
 
-# Deploy a NIC in the target vnet/subnet
-$nic = New-AzNetworkInterface `
-    -Name "$($vmName)-nic" `
-    -ResourceGroupName $ResourceGroupName `
-    -Location $Location `
-    -SubnetId $subnetId `
-    -Force
+# if Public IP requested
+if($publicIpNeeded){
+    # Create a public IP address
+    $publicIP = New-AzPublicIpAddress `
+        -ResourceGroupName $ResourceGroupName `
+        -Location $Location `
+        -Name "pip-$($vmName)" `
+        -AllocationMethod Static `
+        -IdleTimeoutInMinutes 4 `
+        -Force
+    # Deploy a NIC in the target vnet/subnet
+    $nic = New-AzNetworkInterface `
+        -Name "nic-$($vmName)" `
+        -ResourceGroupName $ResourceGroupName `
+        -Location $Location `
+        -SubnetId $subnetId `
+        -PublicIpAddressId $publicIP.Id `
+        -Force
+}
+else {
+    # Create a virtual network card and associate with public IP address.
+    $nic = New-AzNetworkInterface `
+        -Name "$($vmName)-nic" `
+        -ResourceGroupName $ResourceGroupName `
+        -Location $Location `
+        -SubnetId $subnetId `
+        -Force
+}
 
 # Create a virtual machine configuration
 $vmConfig = New-AzVMConfig -VMName $vmName -VMSize $vmSize `
